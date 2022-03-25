@@ -55,6 +55,34 @@
     <audio data-key="75" src="sounds/tom.wav"></audio>
     <audio data-key="76" src="sounds/tink.wav"></audio>
 
-    <script></script>
+    <script>
+      function removeKeyEffect(e) {
+        e.target.classList.remove("playing");
+      }
+
+      function playSound(e) {
+        const keyCode = e.keyCode;
+
+        const audioNode = document.querySelector(
+          `audio[data-key="${keyCode}"]`
+        );
+
+        if (!audioNode) return;
+
+        const keyNode = document.querySelector(`div[data-key="${keyCode}"]`);
+
+        keyNode.classList.add("playing");
+        audioNode.currentTime = 0;
+        audioNode.play();
+      }
+
+      const keys = document.querySelectorAll(".key");
+
+      keys.forEach((key) => {
+        key.addEventListener("transitionend", removeKeyEffect);
+      });
+
+      window.addEventListener("keydown", playSound);
+    </script>
   </body>
 </html>
