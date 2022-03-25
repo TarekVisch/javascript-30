@@ -58,9 +58,44 @@
         background: black;
         position: absolute;
         top: 50%;
+        transform-origin: right center;
       }
     </style>
 
-    <script></script>
+    <script>
+      const hoursHandDOM = document.querySelector(".hour-hand");
+      const minutesHandDOM = document.querySelector(".min-hand");
+      const secondsHandDOM = document.querySelector(".second-hand");
+
+      function getHoursMinutesSeconds() {
+        const date = new Date();
+        const hours = date.getHours();
+
+        // Converted to 12 hours format
+        if (hours < 12) {
+          hours -= 12;
+        }
+
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        return { hours, minutes, seconds };
+      }
+
+      function updateClock() {
+        let { hours, minutes, seconds } = getHoursMinutesSeconds();
+
+        let hoursToDegree = (hours * 360) / 12 + 90;
+        let minutesToDegree = (minutes * 360) / 60 + 90;
+        let secondsToDegree = (seconds * 360) / 60 + 90;
+
+        hoursHandDOM.style.transform = `rotate(${hoursToDegree}deg)`;
+        minutesHandDOM.style.transform = `rotate(${minutesToDegree}deg)`;
+        secondsHandDOM.style.transform = `rotate(${secondsToDegree}deg)`;
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
   </body>
 </html>
