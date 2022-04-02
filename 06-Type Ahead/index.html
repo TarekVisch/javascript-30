@@ -64,7 +64,7 @@
 
         const populationSpan = document.createElement("span");
         populationSpan.setAttribute("class", "population");
-        populationSpan.innerText = item.population;
+        populationSpan.innerText = numberWithComma(item.population);
 
         listItem.appendChild(nameSpan);
         listItem.appendChild(populationSpan);
@@ -77,6 +77,10 @@
         const end = query.length + start;
 
         return { start, end };
+      }
+
+      function numberWithComma(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
 
       const searchInputDOM = document.querySelector(".search");
