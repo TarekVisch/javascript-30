@@ -25,25 +25,26 @@
           cities = [...data];
         });
 
-      const searchInputDOM = document.querySelector(".search");
-      const ul = document.querySelector(".suggestions");
-
-      searchInputDOM.addEventListener("input", (e) => {
-        const { value } = e.target;
-
-        const filteredCitiesArray = cities.filter(
+      function findResults(query, cities) {
+        return cities.filter(
           (item) =>
-            item.state.toLowerCase().includes(value.toLowerCase()) ||
-            item.city.toLowerCase().includes(value.toLowerCase())
+            item.state.toLowerCase().includes(query.toLowerCase()) ||
+            item.city.toLowerCase().includes(query.toLowerCase())
         );
+      }
 
-        ul.innerHTML = "";
+      function displayResult() {
+        const query = this.value;
 
-        filteredCitiesArray.forEach((item) => {
-          const listItem = createListItem(item, value);
-          ul.appendChild(listItem);
+        const results = findResults(query, cities);
+
+        sugggestions.innerHTML = "";
+
+        results.forEach((item) => {
+          const listItem = createListItem(item, query);
+          sugggestions.appendChild(listItem);
         });
-      });
+      }
 
       function createListItem(item, inputValue) {
         const listItem = document.createElement("li");
@@ -77,6 +78,11 @@
 
         return { start, end };
       }
+
+      const searchInputDOM = document.querySelector(".search");
+      const sugggestions = document.querySelector(".suggestions");
+
+      searchInputDOM.addEventListener("input", displayResult);
     </script>
   </body>
 </html>
