@@ -1,22 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+      let cities = null;
 
-</script>
-</body>
+      fetch(endpoint)
+        .then((resp) => resp.json())
+        .then((data) => {
+          cities = [...data];
+        });
+
+      const searchInputDOM = document.querySelector(".search");
+      const ul = document.querySelector(".suggestions");
+
+      searchInputDOM.addEventListener("input", (e) => {
+        const { value } = e.target;
+
+        const filteredCitiesArray = cities.filter(
+          (item) =>
+            item.state.toLowerCase().includes(value.toLowerCase()) ||
+            item.city.toLowerCase().includes(value.toLowerCase())
+        );
+
+        ul.innerHTML = "";
+
+        filteredCitiesArray.forEach((item) => {
+          const listItem = createListItem(item, value);
+          ul.appendChild(listItem);
+        });
+      });
+
+      function createListItem(item, inputValue) {
+        const listItem = document.createElement("li");
+
+        const nameSpan = document.createElement("span");
+        nameSpan.setAttribute("class", "name");
+
+        const cityState = `${item.city}, ${item.state}`;
+        const position = getStartAndEndPosition(cityState, inputValue);
+        nameSpan.innerHTML = `${cityState.slice(
+          0,
+          position.start
+        )} <span class="hl">${cityState.slice(
+          position.start,
+          position.end
+        )}</span>${cityState.slice(position.end)}`;
+
+        const populationSpan = document.createElement("span");
+        populationSpan.setAttribute("class", "population");
+        populationSpan.innerText = item.population;
+
+        listItem.appendChild(nameSpan);
+        listItem.appendChild(populationSpan);
+
+        return listItem;
+      }
+
+      function getStartAndEndPosition(string, query) {
+        const start = string.toLowerCase().indexOf(query.toLowerCase());
+        const end = query.length + start;
+
+        return { start, end };
+      }
+    </script>
+  </body>
 </html>
